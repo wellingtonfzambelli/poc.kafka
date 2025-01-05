@@ -2,9 +2,17 @@ using poc.kafka.crosscutting.Domain;
 using poc.kafka.crosscutting.Kafka;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddTransient<IUserProducer, UserProducer>();
+
+builder.Services.AddTransient<IUserProducer>(p =>
+    new UserProducer(
+        builder.Configuration["kafkaConfig:TopicName"],
+        builder.Configuration["kafkaConfig:BootstrapServer"],
+        p.GetService<ILogger<UserProducer>>()
+    )
+);
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

@@ -8,22 +8,28 @@ namespace poc.kafka.crosscutting.Kafka;
 
 public sealed class UserProducer : IUserProducer
 {
-    private readonly ProducerConfig _producerConfig;
     private readonly ILogger<UserProducer> _logger;
+    private readonly ProducerConfig _producerConfig;
+    private readonly ConsumerConfig _consumerConfig;
     private readonly string _topicName;
 
-    public UserProducer(IConfiguration configuration, ILogger<UserProducer> logger)
+    public UserProducer
+    (
+        string topicName,
+        string bootstrapServers,
+        ILogger<UserProducer> logger
+    )
     {
-        _logger = logger;
-
-        _topicName = configuration.GetSection("kafkaConfig").GetSection("TopicName").Value;
+        _topicName = topicName;
 
         _producerConfig = new ProducerConfig
         {
-            BootstrapServers = configuration.GetSection("kafkaConfig").GetSection("BootstrapServer").Value,
+            BootstrapServers = bootstrapServers,
             AllowAutoCreateTopics = true,
             Acks = Acks.All
         };
+
+        _logger = logger;
     }
 
     public async Task ProduceAsync(User user, CancellationToken cancellationToken)
@@ -50,5 +56,10 @@ public sealed class UserProducer : IUserProducer
         }
 
         producer.Flush(cancellationToken);
+    }
+
+    public async Task<User> ConsumeAsync(CancellationToken cancellationToken)
+    {
+        return new User(Guid.NewGuid(), "we", "we@gmail.com");
     }
 }
