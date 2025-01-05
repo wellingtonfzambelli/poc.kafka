@@ -1,5 +1,5 @@
-using poc.kafka.producer.Domain;
-using poc.kafka.producer.Kafka;
+using poc.kafka.crosscutting.Domain;
+using poc.kafka.crosscutting.Kafka;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();

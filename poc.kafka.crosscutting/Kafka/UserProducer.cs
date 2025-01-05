@@ -1,8 +1,10 @@
 ﻿using Confluent.Kafka;
-using poc.kafka.producer.Domain;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using poc.kafka.crosscutting.Domain;
 using System.Text.Json;
 
-namespace poc.kafka.producer.Kafka;
+namespace poc.kafka.crosscutting.Kafka;
 
 public sealed class UserProducer : IUserProducer
 {
@@ -36,7 +38,7 @@ public sealed class UserProducer : IUserProducer
                     new Message<Null, string>
                     {
                         Value = JsonSerializer.Serialize(user)
-                    }, 
+                    },
                     cancellationToken
                 );
 

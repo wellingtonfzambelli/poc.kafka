@@ -1,6 +1,6 @@
-﻿using poc.kafka.producer.Domain;
+﻿using poc.kafka.crosscutting.Domain;
 
-namespace poc.kafka.producer.Kafka;
+namespace poc.kafka.crosscutting.Kafka;
 
 public interface IUserProducer
 {
