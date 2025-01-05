@@ -1,23 +1,26 @@
 ﻿using Confluent.Kafka;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using poc.kafka.crosscutting.Domain;
 using System.Text.Json;
 
 namespace poc.kafka.crosscutting.Kafka;
 
-public sealed class UserProducer : IUserProducer
+public sealed class UserKafka : IUserKafka
 {
-    private readonly ILogger<UserProducer> _logger;
     private readonly ProducerConfig _producerConfig;
-    private readonly ConsumerConfig _consumerConfig;
-    private readonly string _topicName;
 
-    public UserProducer
+    private readonly ConsumerConfig _consumerConfig;
+    private readonly IConsumer<Ignore, string> _consumer;
+
+    private readonly string _topicName;
+    private readonly ILogger<UserKafka> _logger;
+
+    public UserKafka
     (
         string topicName,
         string bootstrapServers,
-        ILogger<UserProducer> logger
+        string groupId,
+        ILogger<UserKafka> logger
     )
     {
         _topicName = topicName;
@@ -28,6 +31,14 @@ public sealed class UserProducer : IUserProducer
             AllowAutoCreateTopics = true,
             Acks = Acks.All
         };
+
+        _consumerConfig = new ConsumerConfig
+        {
+            BootstrapServers = bootstrapServers,
+            GroupId = groupId,
+            AutoOffsetReset = AutoOffsetReset.Earliest // removes from the topic
+        };
+        _consumer = new ConsumerBuilder<Ignore, string>(_consumerConfig).Build();
 
         _logger = logger;
     }
@@ -60,6 +71,21 @@ public sealed class UserProducer : IUserProducer
 
     public async Task<User> ConsumeAsync(CancellationToken cancellationToken)
     {
-        return new User(Guid.NewGuid(), "we", "we@gmail.com");
+        _consumer.Subscribe(_topicName);
+
+
+        if (_consumer.Consume(cancellationToken)
+            is var result && result?.Message?.Value is null)
+            return null;
+
+        _logger.LogInformation($"Message: {result.Message.Value}");
+        User user = JsonSerializer.Deserialize<User>(result.Message.Value);
+
+        _consumer.Commit(result);
+
+        return user;
+
+
+
     }
 }

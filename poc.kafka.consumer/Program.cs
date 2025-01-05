@@ -7,7 +7,14 @@ using poc.kafka.crosscutting.Kafka;
 HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 
 builder.Services.AddHostedService<UserConsumerJob>();
-builder.Services.AddTransient<IUserProducer, UserProducer>();
+builder.Services.AddTransient<IUserKafka>(p =>
+    new UserKafka(
+        builder.Configuration["kafkaConfig:TopicName"],
+        builder.Configuration["kafkaConfig:BootstrapServer"],
+        builder.Configuration["kafkaConfig:GroupId"],
+        p.GetService<ILogger<UserKafka>>()
+    )
+);
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();

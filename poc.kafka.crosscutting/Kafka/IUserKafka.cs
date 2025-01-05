@@ -2,7 +2,7 @@
 
 namespace poc.kafka.crosscutting.Kafka;
 
-public interface IUserProducer
+public interface IUserKafka
 {
     Task ProduceAsync(User user, CancellationToken cancellationToken);
     Task<User> ConsumeAsync(CancellationToken cancellationToken);

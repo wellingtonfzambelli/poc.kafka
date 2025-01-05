@@ -6,11 +6,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddTransient<IUserProducer>(p =>
-    new UserProducer(
+builder.Services.AddTransient<IUserKafka>(p =>
+    new UserKafka(
         builder.Configuration["kafkaConfig:TopicName"],
         builder.Configuration["kafkaConfig:BootstrapServer"],
-        p.GetService<ILogger<UserProducer>>()
+        builder.Configuration["kafkaConfig:GroupId"],
+        p.GetService<ILogger<UserKafka>>()
     )
 );
 
@@ -21,11 +22,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapPost("/user", async (User user, IUserProducer producer, CancellationToken cancellationToken) =>
+app.MapPost("/user", async (User user, IUserKafka userKafka, CancellationToken cancellationToken) =>
 {
     try
     {
-        await producer.ProduceAsync(user, cancellationToken);
+        await userKafka.ProduceAsync(user, cancellationToken);
         return Results.Ok($"Message produced succefully: {user.Id}");
     }
     catch (Exception ex)

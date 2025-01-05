@@ -13,6 +13,7 @@ services:
       ASPNETCORE_ENVIRONMENT: "Development"
       kafkaConfig__BootstrapServer: "localhost:9092"
       kafkaConfig__TopicName:  "topic-user"
+      kafkaConfig__GroupId:  "group-user"
     networks:
       - kafka-network
     depends_on:
