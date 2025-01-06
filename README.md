@@ -6,7 +6,7 @@ A Web API application was developed in .NET 8 to produce messages to the 'topic-
 # Stacks of this project
 - Web Api in .NET 8
 - Background Service in .NET 8
-- Kafka
+- Kafka (Zookeeper & Kafdrop)
 - Docker Compose
 - Swagger
 - Visual Studio 2022
