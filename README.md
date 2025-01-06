@@ -8,5 +8,5 @@ A Web API application was developed in .NET 8 to produce messages to the 'topic-
 - Background Service in .NET 8
 - Kafka
 - Docker Compose
+- Swagger
 - Visual Studio 2022
-- Postman
