@@ -3,7 +3,8 @@ This is a simple application that uses Kafka as a message broker. A Web API appl
 
 
 # Stacks of this project
-- Web Api in .NET 8
+- .NET 8
+- Minimal API
 - Background Service in .NET 8
 - Kafka (Zookeeper & Kafdrop)
 - Docker Compose
