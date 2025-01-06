@@ -69,27 +69,6 @@ public sealed class UserKafka : IUserKafka
         producer.Flush(cancellationToken);
     }
 
-    public async Task<User> ConsumeAsync(CancellationToken cancellationToken)
-    {
-        _consumer.Subscribe(_topicName);
-
-
-        if (_consumer.Consume(cancellationToken)
-            is var result && result?.Message?.Value is null)
-            return null;
-
-        _logger.LogInformation($"Message: {result.Message.Value}");
-        User user = JsonSerializer.Deserialize<User>(result.Message.Value);
-
-        _consumer.Commit(result);
-
-        return user;
-
-
-
-    }
-
-
     public IConsumer<Ignore, string> GetConsumer() =>
         _consumer;
 
