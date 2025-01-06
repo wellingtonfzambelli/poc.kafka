@@ -6,7 +6,7 @@ This is a simple application that uses Kafka as a message broker. A Web API appl
 - .NET 8
 - Minimal API _(Producer of messages)_
 - Background Service _(Consumer of messages)_
-- Kafka (Zookeeper & Kafdrop)
+- Kafka _(Zookeeper & Kafdrop)_
 - Docker Compose
 - Swagger
 - Visual Studio 2022
