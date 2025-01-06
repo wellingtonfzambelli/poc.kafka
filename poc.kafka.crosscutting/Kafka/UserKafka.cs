@@ -88,4 +88,11 @@ public sealed class UserKafka : IUserKafka
 
 
     }
+
+
+    public IConsumer<Ignore, string> GetConsumer() =>
+        _consumer;
+
+    public string GetTopicName() =>
+        _topicName;
 }
