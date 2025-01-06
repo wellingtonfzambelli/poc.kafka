@@ -14,5 +14,5 @@ A Web API application was developed in .NET 8 to produce messages to the 'topic-
 
 # Screen Shots
 <div align="left">
-  <img src="![image](https://github.com/user-attachments/assets/65c3afdb-4ae2-4e9e-a775-c2978c3633ba)" width="30%">
+  <img src="https://github.com/user-attachments/assets/7e47fdd5-c6ed-4e3d-94b6-7c50eb95bff6" alt="Descrição da imagem" style="width:33%;">
 </div>
