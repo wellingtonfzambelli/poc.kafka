@@ -10,3 +10,9 @@ A Web API application was developed in .NET 8 to produce messages to the 'topic-
 - Docker Compose
 - Swagger
 - Visual Studio 2022
+
+
+# Screen Shots
+<div align="left">
+  <img src="![image](https://github.com/user-attachments/assets/65c3afdb-4ae2-4e9e-a775-c2978c3633ba)" width="30%">
+</div>
