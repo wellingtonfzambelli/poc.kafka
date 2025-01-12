@@ -1,41 +1,36 @@
 ﻿using Confluent.Kafka;
 using Microsoft.Extensions.Logging;
-using poc.kafka.crosscutting.Domain;
-using System.Text.Json;
+using poc.kafka.crosscutting.Settings;
 
 namespace poc.kafka.crosscutting.Kafka;
 
-public sealed class UserKafka : IUserKafka
+public sealed class KafkaService : IKafkaService
 {
     private readonly ProducerConfig _producerConfig;
-
     private readonly ConsumerConfig _consumerConfig;
     private readonly IConsumer<Ignore, string> _consumer;
+    private readonly KafkaSettings _kafkaSettings;
+    private readonly ILogger<KafkaService> _logger;
 
-    private readonly string _topicName;
-    private readonly ILogger<UserKafka> _logger;
-
-    public UserKafka
+    public KafkaService
     (
-        string topicName,
-        string bootstrapServers,
-        string groupId,
-        ILogger<UserKafka> logger
+        KafkaSettings kafkaSettings,
+        ILogger<KafkaService> logger
     )
     {
-        _topicName = topicName;
+        _kafkaSettings = kafkaSettings;
 
         _producerConfig = new ProducerConfig
         {
-            BootstrapServers = bootstrapServers,
+            BootstrapServers = _kafkaSettings.BootstrapServer,
             AllowAutoCreateTopics = true,
             Acks = Acks.All
         };
 
         _consumerConfig = new ConsumerConfig
         {
-            BootstrapServers = bootstrapServers,
-            GroupId = groupId,
+            BootstrapServers = _kafkaSettings.BootstrapServer,
+            GroupId = _kafkaSettings.GroupId,
             AutoOffsetReset = AutoOffsetReset.Earliest // removes from the topic
         };
         _consumer = new ConsumerBuilder<Ignore, string>(_consumerConfig).Build();
@@ -43,7 +38,7 @@ public sealed class UserKafka : IUserKafka
         _logger = logger;
     }
 
-    public async Task ProduceAsync(User user, CancellationToken cancellationToken)
+    public async Task ProduceAsync(string message, CancellationToken cancellationToken)
     {
         using var producer = new ProducerBuilder<Null, string>(_producerConfig).Build();
 
@@ -51,10 +46,10 @@ public sealed class UserKafka : IUserKafka
         {
             var deliveryResult = await producer.ProduceAsync
                 (
-                    topic: _topicName,
+                    topic: _kafkaSettings.TopicName,
                     new Message<Null, string>
                     {
-                        Value = JsonSerializer.Serialize(user)
+                        Value = message
                     },
                     cancellationToken
                 );
@@ -73,5 +68,5 @@ public sealed class UserKafka : IUserKafka
         _consumer;
 
     public string GetTopicName() =>
-        _topicName;
+        _kafkaSettings.TopicName;
 }

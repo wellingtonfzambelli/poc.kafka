@@ -1,11 +1,9 @@
 ﻿using Confluent.Kafka;
-using poc.kafka.crosscutting.Domain;
 
 namespace poc.kafka.crosscutting.Kafka;
 
-public interface IUserKafka
+public interface IKafkaService : IMessageService
 {
-    Task ProduceAsync(User user, CancellationToken cancellationToken);
     IConsumer<Ignore, string> GetConsumer();
     string GetTopicName();
 }

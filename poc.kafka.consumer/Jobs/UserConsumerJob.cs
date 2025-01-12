@@ -12,11 +12,11 @@ internal sealed class UserConsumerJob : BackgroundService
     private readonly ILogger<UserConsumerJob> _logger;
     private readonly IConsumer<Ignore, string>? _consumer;
 
-    public UserConsumerJob(IUserKafka userKafka, ILogger<UserConsumerJob> logger)
+    public UserConsumerJob(IKafkaService userKafka, ILogger<UserConsumerJob> logger)
         : this(userKafka) =>
         _logger = logger;
 
-    private UserConsumerJob(IUserKafka userKafka)
+    private UserConsumerJob(IKafkaService userKafka)
     {
         _consumer = userKafka.GetConsumer();
         _consumer.Subscribe(userKafka.GetTopicName());
